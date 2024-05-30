@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý sinh viên</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="d-flex justify-content-center mt-5">
+        <div class="col-10 border rounded">
+            <h3 class="text-center p-2">Student Management</h3>
+            <div class="bg-white">
+                <nav class="navbar navbar-expand-sm navbar-light bg-light">
+                    <div class="collapse navbar-collapse d-flex justify-content-between" id="collapsibleNavId">
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#add-modal">
+                            Add new Student
+                        </button>
+                        <form class="form-inline my-2 my-lg-0">
+                            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                    </div>
+                </nav>
+            </div>
+            
+            <div class="p-4 bg-white">
+                <table class="table text-center">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Date Of Birth</th>
+                        <th>Sex</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th colspan="2">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item:${students}">
+                            <td th:text="${item.student_id}"></td>
+                            <td th:text="${item.student_name}"></td>
+                            <td><img th:src="@{|/uploads/${item.image_url}|}" alt="" width="100px"></td>
+                            <td th:text="${item.formatBirthDay()}"></td>
+                            <td th:text="${item.sex?'Nữ':'Nam'}"></td>
+                            <td th:text="${item.phone_number}"></td>
+                            <td th:text="${item.address}"></td>
+                            <td>
+                                <a th:href="@{/student-edit(id=${item.student_id})}" class="btn btn-warning">Sửa</a>
+                            </td>
+                            <td>
+                                <a th:href="@{/student-delete(id=${item.student_id})}" class="btn btn-danger">Xóa</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="add-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form th:object="${student}" action="/add" method="post" class="modal-content" enctype="multipart/form-data">
+            <div class="modal-header">
+                <h5 class="modal-title">Add new student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-2">
+                    <label for="student_name" class="form-label">Student name</label>
+                    <input th:field="*{student_name}" type="text" id="student_name" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label for="phone_number" class="form-label">Phone number</label>
+                    <input th:field="*{phone_number}" name="" type="text" id="phone_number" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label for="address" class="form-label">Address</label>
+                    <input th:field="*{address}" type="text" id="address" class="form-control">
+                </div>
+
+                <div class="form-group mb-2">
+                    <label for="sex">Sex</label>
+                    <select th:field="*{sex}" class="form-control" name="sex" id="sex">
+                        <option value="0">Nam</option>
+                        <option value="1">Nữ</option>
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="birthday" class="form-label">Date of birth</label>
+                    <input th:field="*{birthday}" type="date" id="birthday" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label for="image" class="form-label">Ảnh đại diện</label>
+                    <input th:name="imageFile" type="file" id="image" class="form-control">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">ADD</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script>
+    function deleteConfirm (url) {
+        const cf = confirm("xác nhận xóa?");
+        if (cf) {
+            window.location = url;
+        }
+    }
+</script>
+</body>
+</html>
